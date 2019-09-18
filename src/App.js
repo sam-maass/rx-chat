@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import MessageBox from "./MessageBox";
+import { messageService } from "./messageService";
+import "./App.css";
 
 function App() {
+  const [messages, setMessages] = useState([]);
+  const [text, setText] = useState("");
+
+  const handleClear = () => {
+    messageService.clearMessages();
+  };
+  const handleButtonClick = () => {
+    messageService.sendMessage(text);
+    setText("");
+  };
+  const handleInputChange = e => setText(e.target.value);
+
+  useEffect(() => {
+    messageService.subscribe(messages => setMessages(messages));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="MessageContainer">
+        {messages.map((message, idx) => (
+          <MessageBox className="MessageBox" key={idx} message={message} />
+        ))}
+      </div>
+      <input
+        type="text"
+        name="messageInput"
+        id="messageInput"
+        value={text}
+        onChange={handleInputChange}
+      />
+      <button onClick={handleButtonClick}>Add Message</button> <br />
+      <button onClick={handleClear}>Clear All</button>
     </div>
   );
 }
