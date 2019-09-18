@@ -6,7 +6,6 @@ let messages = [];
 export const messageService = {
   sendMessage: message => {
     messages = [...messages, message];
-    console.log(messages);
     subject.next(messages);
   },
   clearMessages: () => {
